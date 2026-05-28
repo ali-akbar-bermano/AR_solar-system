@@ -145,7 +145,7 @@
     <a-scene
       mindar-image="imageTargetSrc: ./assets/targets/solar_system.mind; maxTrack: 1; autoStart: true;"
       color-space="sRGB"
-      renderer="colorManagement: true; physicallyCorrectLights: true"
+      renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true; alpha: true"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
@@ -166,7 +166,7 @@
       <a-entity class="planet-target" id="mercury-target" mindar-image-target="targetIndex: 0" data-planet="mercury">
         <a-gltf-model
           src="#mercuryModel"
-          position="0 0 0"
+          position="0 0 0.12"
           scale="0.36 0.36 0.36"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 7000; easing: linear"
         ></a-gltf-model>
@@ -175,7 +175,7 @@
       <a-entity class="planet-target" id="venus-target" mindar-image-target="targetIndex: 1" data-planet="venus">
         <a-gltf-model
           src="#venusModel"
-          position="0 0 0"
+          position="0 0 0.12"
           scale="0.36 0.36 0.36"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"
         ></a-gltf-model>
@@ -184,7 +184,7 @@
       <a-entity class="planet-target" id="earth-target" mindar-image-target="targetIndex: 2" data-planet="earth">
         <a-gltf-model
           src="#earthModel"
-          position="0 0 0"
+          position="0 0 0.12"
           scale="0.36 0.36 0.36"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6500; easing: linear"
         ></a-gltf-model>
@@ -193,7 +193,7 @@
       <a-entity class="planet-target" id="mars-target" mindar-image-target="targetIndex: 3" data-planet="mars">
         <a-gltf-model
           src="#marsModel"
-          position="0 0 0"
+          position="0 0 0.12"
           scale="0.35 0.35 0.35"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6800; easing: linear"
         ></a-gltf-model>
@@ -202,7 +202,7 @@
       <a-entity class="planet-target" id="jupiter-target" mindar-image-target="targetIndex: 4" data-planet="jupiter">
         <a-gltf-model
           src="#jupiterModel"
-          position="0 0 0"
+          position="0 0 0.12"
           scale="0.38 0.38 0.38"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 9000; easing: linear"
         ></a-gltf-model>
@@ -211,7 +211,7 @@
       <a-entity class="planet-target" id="saturn-target" mindar-image-target="targetIndex: 5" data-planet="saturn">
         <a-gltf-model
           src="#saturnModel"
-          position="0 0 0"
+          position="0 0 0.12"
           rotation="0 0 -12"
           scale="0.32 0.32 0.32"
           animation__spin="property: rotation; to: 0 360 -12; loop: true; dur: 12000; easing: linear"
@@ -221,7 +221,7 @@
       <a-entity class="planet-target" id="uranus-target" mindar-image-target="targetIndex: 6" data-planet="uranus">
         <a-gltf-model
           src="#uranusModel"
-          position="0 0 0"
+          position="0 0 0.12"
           rotation="0 0 82"
           scale="0.37 0.37 0.37"
           animation__spin="property: rotation; to: 0 360 82; loop: true; dur: 10000; easing: linear"
