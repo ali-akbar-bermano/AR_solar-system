@@ -150,94 +150,155 @@
       device-orientation-permission-ui="enabled: false"
     >
       <a-assets timeout="30000">
-        <a-asset-item id="mercuryModel" src="./assets/models/mercury.gltf"></a-asset-item>
-        <a-asset-item id="venusModel" src="./assets/models/venus.gltf"></a-asset-item>
-        <a-asset-item id="earthModel" src="./assets/models/earth.gltf"></a-asset-item>
-        <a-asset-item id="marsModel" src="./assets/models/mars.gltf"></a-asset-item>
-        <a-asset-item id="jupiterModel" src="./assets/models/jupiter.gltf"></a-asset-item>
-        <a-asset-item id="saturnModel" src="./assets/models/saturn.gltf"></a-asset-item>
-        <a-asset-item id="uranusModel" src="./assets/models/uranus.gltf"></a-asset-item>
+        <a-asset-item
+          id="mercuryModel"
+          src="./assets/models/mercury.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="venusModel"
+          src="./assets/models/venus.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="earthModel"
+          src="./assets/models/earth.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="marsModel"
+          src="./assets/models/mars.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="jupiterModel"
+          src="./assets/models/jupiter.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="saturnModel"
+          src="./assets/models/saturn.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="uranusModel"
+          src="./assets/models/uranus.gltf"
+        ></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
       <a-light type="ambient" color="#ffffff" intensity="0.85"></a-light>
-      <a-light type="directional" color="#ffffff" intensity="1.2" position="0 2 1"></a-light>
+      <a-light
+        type="directional"
+        color="#ffffff"
+        intensity="1.2"
+        position="0 2 1"
+      ></a-light>
 
-      <a-entity class="planet-target" id="mercury-target" mindar-image-target="targetIndex: 0" data-planet="mercury">
+      <a-entity
+        class="planet-target"
+        id="mercury-target"
+        mindar-image-target="targetIndex: 0"
+        data-planet="mercury"
+      >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.36"
+          data-base-scale="0.28"
           src="#mercuryModel"
           position="0 0 0.12"
-          scale="0.36 0.36 0.36"
+          scale="0.28 0.28 0.28"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 7000; easing: linear"
         ></a-gltf-model>
       </a-entity>
 
-      <a-entity class="planet-target" id="venus-target" mindar-image-target="targetIndex: 1" data-planet="venus">
+      <a-entity
+        class="planet-target"
+        id="venus-target"
+        mindar-image-target="targetIndex: 1"
+        data-planet="venus"
+      >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.36"
+          data-base-scale="0.28"
           src="#venusModel"
           position="0 0 0.12"
-          scale="0.36 0.36 0.36"
+          scale="0.28 0.28 0.28"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"
         ></a-gltf-model>
       </a-entity>
 
-      <a-entity class="planet-target" id="earth-target" mindar-image-target="targetIndex: 2" data-planet="earth">
+      <a-entity
+        class="planet-target"
+        id="earth-target"
+        mindar-image-target="targetIndex: 2"
+        data-planet="earth"
+      >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.36"
+          data-base-scale="0.28"
           src="#earthModel"
           position="0 0 0.12"
-          scale="0.36 0.36 0.36"
+          scale="0.28 0.28 0.28"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6500; easing: linear"
         ></a-gltf-model>
       </a-entity>
 
-      <a-entity class="planet-target" id="mars-target" mindar-image-target="targetIndex: 3" data-planet="mars">
+      <a-entity
+        class="planet-target"
+        id="mars-target"
+        mindar-image-target="targetIndex: 3"
+        data-planet="mars"
+      >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.35"
+          data-base-scale="0.27"
           src="#marsModel"
           position="0 0 0.12"
-          scale="0.35 0.35 0.35"
+          scale="0.27 0.27 0.27"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6800; easing: linear"
         ></a-gltf-model>
       </a-entity>
 
-      <a-entity class="planet-target" id="jupiter-target" mindar-image-target="targetIndex: 4" data-planet="jupiter">
+      <a-entity
+        class="planet-target"
+        id="jupiter-target"
+        mindar-image-target="targetIndex: 4"
+        data-planet="jupiter"
+      >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.38"
+          data-base-scale="0.3"
           src="#jupiterModel"
           position="0 0 0.12"
-          scale="0.38 0.38 0.38"
+          scale="0.3 0.3 0.3"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 9000; easing: linear"
         ></a-gltf-model>
       </a-entity>
 
-      <a-entity class="planet-target" id="saturn-target" mindar-image-target="targetIndex: 5" data-planet="saturn">
+      <a-entity
+        class="planet-target"
+        id="saturn-target"
+        mindar-image-target="targetIndex: 5"
+        data-planet="saturn"
+      >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.32"
+          data-base-scale="0.25"
           src="#saturnModel"
           position="0 0 0.12"
           rotation="0 0 -12"
-          scale="0.32 0.32 0.32"
+          scale="0.25 0.25 0.25"
           animation__spin="property: rotation; to: 0 360 -12; loop: true; dur: 12000; easing: linear"
         ></a-gltf-model>
       </a-entity>
 
-      <a-entity class="planet-target" id="uranus-target" mindar-image-target="targetIndex: 6" data-planet="uranus">
+      <a-entity
+        class="planet-target"
+        id="uranus-target"
+        mindar-image-target="targetIndex: 6"
+        data-planet="uranus"
+      >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.37"
+          data-base-scale="0.29"
           src="#uranusModel"
           position="0 0 0.12"
           rotation="0 0 82"
-          scale="0.37 0.37 0.37"
+          scale="0.29 0.29 0.29"
           animation__spin="property: rotation; to: 0 360 82; loop: true; dur: 10000; easing: linear"
         ></a-gltf-model>
       </a-entity>

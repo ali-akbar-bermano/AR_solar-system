@@ -62,22 +62,22 @@ function getViewportScaleMultiplier() {
   );
 
   if (viewportWidth <= 360) {
-    return 0.4;
+    return 1.3;
   }
 
   if (viewportWidth <= 430) {
-    return 0.46;
+    return 1.35;
   }
 
   if (viewportWidth <= 600) {
-    return 0.52;
+    return 1.4;
   }
 
   if (viewportWidth <= 820) {
-    return 0.66;
+    return 1.45;
   }
 
-  return 0.9;
+  return 1.5;
 }
 
 function updatePlanetModelScales() {
