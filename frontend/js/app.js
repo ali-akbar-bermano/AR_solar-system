@@ -62,22 +62,22 @@ function getViewportScaleMultiplier() {
   );
 
   if (viewportWidth <= 360) {
-    return 1.3;
+    return 2.2;
   }
 
   if (viewportWidth <= 430) {
-    return 1.35;
+    return 2.3;
   }
 
   if (viewportWidth <= 600) {
-    return 1.4;
+    return 2.4;
   }
 
   if (viewportWidth <= 820) {
-    return 1.45;
+    return 2.5;
   }
 
-  return 1.5;
+  return 2.6;
 }
 
 function updatePlanetModelScales() {
@@ -127,6 +127,7 @@ targetEntities.forEach((targetEntity) => {
     activeTargets.add(planetKey);
     renderPlanetInfo(planetKey);
     showPlanetTarget();
+    updatePlanetModelScales();
   });
 
   targetEntity.addEventListener("targetLost", () => {
