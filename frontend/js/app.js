@@ -50,9 +50,45 @@ const planetName = document.querySelector("#planet-name");
 const planetSize = document.querySelector("#planet-size");
 const planetDistance = document.querySelector("#planet-distance");
 const planetFact = document.querySelector("#planet-fact");
+const planetModels = document.querySelectorAll(".planet-model");
 
 const activeTargets = new Set();
 let selectedPlanet = "mercury";
+
+function getViewportScaleMultiplier() {
+  const viewportWidth = Math.min(
+    window.innerWidth || 1024,
+    window.screen?.width || window.innerWidth || 1024,
+  );
+
+  if (viewportWidth <= 360) {
+    return 0.48;
+  }
+
+  if (viewportWidth <= 430) {
+    return 0.55;
+  }
+
+  if (viewportWidth <= 600) {
+    return 0.64;
+  }
+
+  if (viewportWidth <= 820) {
+    return 0.78;
+  }
+
+  return 1;
+}
+
+function updatePlanetModelScales() {
+  const scaleMultiplier = getViewportScaleMultiplier();
+
+  planetModels.forEach((model) => {
+    const baseScale = Number(model.dataset.baseScale || 0.36);
+    const responsiveScale = (baseScale * scaleMultiplier).toFixed(3);
+    model.setAttribute("scale", `${responsiveScale} ${responsiveScale} ${responsiveScale}`);
+  });
+}
 
 function renderPlanetInfo(planetKey) {
   const planet = PLANET_DATA[planetKey];
@@ -105,3 +141,9 @@ targetEntities.forEach((targetEntity) => {
 });
 
 renderPlanetInfo(selectedPlanet);
+updatePlanetModelScales();
+
+window.addEventListener("resize", updatePlanetModelScales);
+window.addEventListener("orientationchange", () => {
+  window.setTimeout(updatePlanetModelScales, 250);
+});
