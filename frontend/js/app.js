@@ -55,27 +55,27 @@ const planetModels = document.querySelectorAll(".planet-model");
 const activeTargets = new Set();
 let selectedPlanet = "mercury";
 
+const SAFE_PLANET_SCALES = {
+  mercury: 0.08,
+  venus: 0.08,
+  earth: 0.08,
+  mars: 0.08,
+  jupiter: 0.10,
+  saturn: 0.07,
+  uranus: 0.09
+};
+
 function getViewportScaleMultiplier() {
-  const width = window.innerWidth || window.screen?.width || 1024;
-  const height = window.innerHeight || window.screen?.height || 768;
-  const minDimension = Math.min(width, height);
-
-  // Dynamically scale the 3D models based on the minimum viewport dimension.
-  // In portrait mode, the width is the limiting factor; in landscape, the height is the limiting factor.
-  // On mobile screens (e.g., width 360px-430px), this yields a multiplier of ~0.85-1.0, keeping the model inside the screen boundaries.
-  // On desktop screens, it scales up to 2.4 to display the model in high detail.
-  const scaleMultiplier = Math.max(0.8, Math.min(2.4, minDimension / 420));
-
-  return scaleMultiplier;
+  // Abandon dynamic scaling calculations; return flat 1.0 multiplier
+  return 1.0;
 }
 
 function updatePlanetModelScales() {
-  const scaleMultiplier = getViewportScaleMultiplier();
-
   planetModels.forEach((model) => {
-    const baseScale = Number(model.dataset.baseScale || 0.20);
-    const responsiveScale = Number((baseScale * scaleMultiplier).toFixed(3));
-    model.setAttribute("scale", { x: responsiveScale, y: responsiveScale, z: responsiveScale });
+    const targetEntity = model.closest(".planet-target");
+    const planetKey = targetEntity ? targetEntity.dataset.planet : "mercury";
+    const safeScale = SAFE_PLANET_SCALES[planetKey] || 0.08;
+    model.setAttribute("scale", { x: safeScale, y: safeScale, z: safeScale });
   });
 }
 
@@ -114,13 +114,11 @@ targetEntities.forEach((targetEntity) => {
     renderPlanetInfo(planetKey);
     showPlanetTarget();
 
-    // Directly target the model and force the scale update immediately using A-Frame object format
+    // Directly target the model and apply the static safe scale immediately
     const model = targetEntity.querySelector(".planet-model");
     if (model) {
-      const baseScale = Number(model.dataset.baseScale || 0.20);
-      const scaleMultiplier = getViewportScaleMultiplier();
-      const responsiveScale = Number((baseScale * scaleMultiplier).toFixed(3));
-      model.setAttribute("scale", { x: responsiveScale, y: responsiveScale, z: responsiveScale });
+      const safeScale = SAFE_PLANET_SCALES[planetKey] || 0.08;
+      model.setAttribute("scale", { x: safeScale, y: safeScale, z: safeScale });
     }
   });
 
