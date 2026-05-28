@@ -56,18 +56,23 @@ AFRAME.registerComponent("normalize-model", {
   },
 
   init: function () {
-    this.el.addEventListener("model-loaded", () => {
-      this.rescale();
-    });
+    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.el.addEventListener("model-loaded", this.onModelLoaded);
+
+    // Handle race condition: model may already be loaded
+    if (this.el.getObject3D("mesh")) {
+      this.onModelLoaded();
+    }
   },
 
-  rescale: function () {
+  onModelLoaded: function () {
     const mesh = this.el.getObject3D("mesh");
     if (!mesh) return;
 
-    // Reset the entity scale to 1 first so the bounding box measurement
-    // reflects only the model's internal geometry + node transforms.
-    this.el.object3D.scale.set(1, 1, 1);
+    // Reset entity scale to 1 so bounding box reflects true model geometry
+    this.el.setAttribute("scale", "1 1 1");
+
+    // Force Three.js to update all world matrices before measuring
     this.el.object3D.updateMatrixWorld(true);
 
     const box = new THREE.Box3().setFromObject(mesh);
@@ -75,16 +80,20 @@ AFRAME.registerComponent("normalize-model", {
     box.getSize(size);
 
     const maxDim = Math.max(size.x, size.y, size.z);
-    if (maxDim === 0) return;
+    if (maxDim === 0) {
+      console.warn("normalize-model: bounding box is zero, skipping.");
+      return;
+    }
 
-    const uniformScale = this.data.targetSize / maxDim;
+    const s = this.data.targetSize / maxDim;
 
-    this.el.object3D.scale.set(uniformScale, uniformScale, uniformScale);
+    console.log(
+      "normalize-model: maxDim =", maxDim.toFixed(2),
+      "-> scale =", s.toFixed(6)
+    );
 
-    // Also re-center the model so the sphere sits at the entity origin.
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-    mesh.position.sub(center.multiplyScalar(uniformScale));
+    // Use setAttribute so A-Frame's internal state stays in sync
+    this.el.setAttribute("scale", s + " " + s + " " + s);
   },
 });
 
