@@ -43,122 +43,59 @@ const PLANET_DATA = {
   },
 };
 
-/* ------------------------------------------------------------------ */
-/*  A-Frame component: normalize-model                                 */
-/*  Waits for the GLTF model to fully load, measures its real-world   */
-/*  bounding box (including all baked-in node transforms like the     */
-/*  100x matrices from Sketchfab exports), then uniformly scales the  */
-/*  entire mesh so its longest axis equals `targetSize` (in meters).  */
-/* ------------------------------------------------------------------ */
-AFRAME.registerComponent("normalize-model", {
-  schema: {
-    targetSize: { type: "number", default: 0.3 },
-  },
+const targetEntities = document.querySelectorAll(".planet-target");
+const infoPanel = document.querySelector("#info-panel");
+const trackingStatus = document.querySelector("#tracking-status");
+const planetName = document.querySelector("#planet-name");
+const planetSize = document.querySelector("#planet-size");
+const planetDistance = document.querySelector("#planet-distance");
+const planetFact = document.querySelector("#planet-fact");
 
-  init: function () {
-    this.onModelLoaded = this.onModelLoaded.bind(this);
-    this.el.addEventListener("model-loaded", this.onModelLoaded);
+const activeTargets = new Set();
+let selectedPlanet = "mercury";
 
-    // Handle race condition: model may already be loaded
-    if (this.el.getObject3D("mesh")) {
-      this.onModelLoaded();
-    }
-  },
+function renderPlanetInfo(planetKey) {
+  const planet = PLANET_DATA[planetKey];
+  if (!planet) return;
+  selectedPlanet = planetKey;
+  planetName.textContent = planet.name;
+  planetSize.textContent = planet.size;
+  planetDistance.textContent = planet.distance;
+  planetFact.textContent = planet.fact;
+}
 
-  onModelLoaded: function () {
-    const mesh = this.el.getObject3D("mesh");
-    if (!mesh) return;
+function showPlanetTarget() {
+  const planet = PLANET_DATA[selectedPlanet];
+  trackingStatus.textContent = `${planet.name} target detected`;
+  trackingStatus.classList.add("is-active");
+  renderPlanetInfo(selectedPlanet);
+  infoPanel.classList.add("is-visible");
+}
 
-    // Reset entity scale to 1 so bounding box reflects true model geometry
-    this.el.setAttribute("scale", "1 1 1");
+function hidePlanetTarget() {
+  trackingStatus.textContent = "Scan a planet image";
+  trackingStatus.classList.remove("is-active");
+  infoPanel.classList.remove("is-visible");
+}
 
-    // Force Three.js to update all world matrices before measuring
-    this.el.object3D.updateMatrixWorld(true);
-
-    const box = new THREE.Box3().setFromObject(mesh);
-    const size = new THREE.Vector3();
-    box.getSize(size);
-
-    const maxDim = Math.max(size.x, size.y, size.z);
-    if (maxDim === 0) {
-      console.warn("normalize-model: bounding box is zero, skipping.");
-      return;
-    }
-
-    const s = this.data.targetSize / maxDim;
-
-    console.log(
-      "normalize-model: maxDim =", maxDim.toFixed(2),
-      "-> scale =", s.toFixed(6)
-    );
-
-    // Use setAttribute so A-Frame's internal state stays in sync
-    this.el.setAttribute("scale", s + " " + s + " " + s);
-  },
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const targetEntities = document.querySelectorAll(".planet-target");
-  const infoPanel = document.querySelector("#info-panel");
-  const trackingStatus = document.querySelector("#tracking-status");
-  const planetName = document.querySelector("#planet-name");
-  const planetSize = document.querySelector("#planet-size");
-  const planetDistance = document.querySelector("#planet-distance");
-  const planetFact = document.querySelector("#planet-fact");
-
-  const activeTargets = new Set();
-  let selectedPlanet = "mercury";
-
-  function renderPlanetInfo(planetKey) {
-    const planet = PLANET_DATA[planetKey];
-
-    if (!planet) {
-      return;
-    }
-
-    selectedPlanet = planetKey;
-    planetName.textContent = planet.name;
-    planetSize.textContent = planet.size;
-    planetDistance.textContent = planet.distance;
-    planetFact.textContent = planet.fact;
-  }
-
-  function showPlanetTarget() {
-    const planet = PLANET_DATA[selectedPlanet];
-    trackingStatus.textContent = `${planet.name} target detected`;
-    trackingStatus.classList.add("is-active");
-    renderPlanetInfo(selectedPlanet);
-    infoPanel.classList.add("is-visible");
-  }
-
-  function hidePlanetTarget() {
-    trackingStatus.textContent = "Scan a planet image";
-    trackingStatus.classList.remove("is-active");
-    infoPanel.classList.remove("is-visible");
-  }
-
-  targetEntities.forEach((targetEntity) => {
-    targetEntity.addEventListener("targetFound", () => {
-      const planetKey = targetEntity.dataset.planet;
-      activeTargets.add(planetKey);
-      renderPlanetInfo(planetKey);
-      showPlanetTarget();
-    });
-
-    targetEntity.addEventListener("targetLost", () => {
-      activeTargets.delete(targetEntity.dataset.planet);
-
-      if (activeTargets.size === 0) {
-        hidePlanetTarget();
-        return;
-      }
-
-      const [nextPlanet] = activeTargets;
-      renderPlanetInfo(nextPlanet);
-      showPlanetTarget();
-    });
+targetEntities.forEach((targetEntity) => {
+  targetEntity.addEventListener("targetFound", () => {
+    const planetKey = targetEntity.dataset.planet;
+    activeTargets.add(planetKey);
+    renderPlanetInfo(planetKey);
+    showPlanetTarget();
   });
 
-  renderPlanetInfo(selectedPlanet);
+  targetEntity.addEventListener("targetLost", () => {
+    activeTargets.delete(targetEntity.dataset.planet);
+    if (activeTargets.size === 0) {
+      hidePlanetTarget();
+      return;
+    }
+    const [nextPlanet] = activeTargets;
+    renderPlanetInfo(nextPlanet);
+    showPlanetTarget();
+  });
 });
 
+renderPlanetInfo(selectedPlanet);
