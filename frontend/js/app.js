@@ -56,28 +56,17 @@ const activeTargets = new Set();
 let selectedPlanet = "mercury";
 
 function getViewportScaleMultiplier() {
-  const viewportWidth = Math.min(
-    window.innerWidth || 1024,
-    window.screen?.width || window.innerWidth || 1024,
-  );
+  const width = window.innerWidth || window.screen?.width || 1024;
+  const height = window.innerHeight || window.screen?.height || 768;
+  const minDimension = Math.min(width, height);
 
-  if (viewportWidth <= 360) {
-    return 2.2;
-  }
+  // Dynamically scale the 3D models based on the minimum viewport dimension.
+  // In portrait mode, the width is the limiting factor; in landscape, the height is the limiting factor.
+  // On mobile screens (e.g., width 360px-430px), this yields a multiplier of ~0.85-1.0, keeping the model inside the screen boundaries.
+  // On desktop screens, it scales up to 2.4 to display the model in high detail.
+  const scaleMultiplier = Math.max(0.8, Math.min(2.4, minDimension / 420));
 
-  if (viewportWidth <= 430) {
-    return 2.3;
-  }
-
-  if (viewportWidth <= 600) {
-    return 2.4;
-  }
-
-  if (viewportWidth <= 820) {
-    return 2.5;
-  }
-
-  return 2.6;
+  return scaleMultiplier;
 }
 
 function updatePlanetModelScales() {
