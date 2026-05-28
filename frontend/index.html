@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solar System WebAR</title>
+
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+        --panel-bg: rgba(9, 13, 24, 0.88);
+        --panel-border: rgba(255, 255, 255, 0.16);
+        --text-main: #f8fafc;
+        --text-muted: #b9c3d6;
+        --accent: #ffcf5a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        color: var(--text-main);
+        font-family: Arial, Helvetica, sans-serif;
+        background: #030711;
+      }
+
+      .tracking-status {
+        position: fixed;
+        z-index: 10;
+        top: 14px;
+        left: 14px;
+        padding: 14px 16px;
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        border-radius: 8px;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+        backdrop-filter: blur(8px);
+      }
+
+      .tracking-status.is-active {
+        color: var(--accent);
+      }
+
+      .info-panel {
+        position: fixed;
+        left: 14px;
+        right: 14px;
+        bottom: 14px;
+        z-index: 10;
+        display: grid;
+        gap: 12px;
+        max-width: 680px;
+        padding: 16px;
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        border-radius: 8px;
+        transform: translateY(calc(100% + 24px));
+        opacity: 0;
+        transition:
+          transform 220ms ease,
+          opacity 220ms ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .info-panel.is-visible {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .planet-title {
+        margin: 0 0 6px;
+        font-size: 1.28rem;
+        line-height: 1.2;
+      }
+
+      .planet-fact {
+        margin: 0;
+        color: var(--text-muted);
+        line-height: 1.45;
+      }
+
+      .planet-stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 0;
+      }
+
+      .planet-stats div {
+        min-width: 0;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+      }
+
+      .planet-stats dt {
+        margin-bottom: 4px;
+        color: var(--text-muted);
+        font-size: 0.78rem;
+      }
+
+      .planet-stats dd {
+        margin: 0;
+        font-weight: 700;
+      }
+
+      @media (min-width: 720px) {
+        .info-panel {
+          right: auto;
+          width: 620px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tracking-status" class="tracking-status">Scan a planet image</div>
+
+    <section id="info-panel" class="info-panel" aria-live="polite">
+      <div>
+        <h1 id="planet-name" class="planet-title">Planet AR</h1>
+        <p id="planet-fact" class="planet-fact">
+          Point the camera at one of the planet target images.
+        </p>
+      </div>
+
+      <dl class="planet-stats">
+        <div>
+          <dt>Diameter</dt>
+          <dd id="planet-size">-</dd>
+        </div>
+        <div>
+          <dt>Distance</dt>
+          <dd id="planet-distance">-</dd>
+        </div>
+      </dl>
+    </section>
+
+    <a-scene
+      mindar-image="imageTargetSrc: ./assets/targets/solar_system.mind; maxTrack: 1; autoStart: true;"
+      color-space="sRGB"
+      renderer="colorManagement: true; physicallyCorrectLights: true"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-assets timeout="30000">
+        <a-asset-item id="mercuryModel" src="./assets/models/mercury.gltf"></a-asset-item>
+        <a-asset-item id="venusModel" src="./assets/models/venus.gltf"></a-asset-item>
+        <a-asset-item id="earthModel" src="./assets/models/earth.gltf"></a-asset-item>
+        <a-asset-item id="marsModel" src="./assets/models/mars.gltf"></a-asset-item>
+        <a-asset-item id="jupiterModel" src="./assets/models/jupiter.gltf"></a-asset-item>
+        <a-asset-item id="saturnModel" src="./assets/models/saturn.gltf"></a-asset-item>
+        <a-asset-item id="uranusModel" src="./assets/models/uranus.gltf"></a-asset-item>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-light type="ambient" color="#ffffff" intensity="0.85"></a-light>
+      <a-light type="directional" color="#ffffff" intensity="1.2" position="0 2 1"></a-light>
+
+      <a-entity class="planet-target" id="mercury-target" mindar-image-target="targetIndex: 0" data-planet="mercury">
+        <a-gltf-model
+          src="#mercuryModel"
+          position="0 0 0"
+          scale="0.36 0.36 0.36"
+          animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 7000; easing: linear"
+        ></a-gltf-model>
+      </a-entity>
+
+      <a-entity class="planet-target" id="venus-target" mindar-image-target="targetIndex: 1" data-planet="venus">
+        <a-gltf-model
+          src="#venusModel"
+          position="0 0 0"
+          scale="0.36 0.36 0.36"
+          animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"
+        ></a-gltf-model>
+      </a-entity>
+
+      <a-entity class="planet-target" id="earth-target" mindar-image-target="targetIndex: 2" data-planet="earth">
+        <a-gltf-model
+          src="#earthModel"
+          position="0 0 0"
+          scale="0.36 0.36 0.36"
+          animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6500; easing: linear"
+        ></a-gltf-model>
+      </a-entity>
+
+      <a-entity class="planet-target" id="mars-target" mindar-image-target="targetIndex: 3" data-planet="mars">
+        <a-gltf-model
+          src="#marsModel"
+          position="0 0 0"
+          scale="0.35 0.35 0.35"
+          animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6800; easing: linear"
+        ></a-gltf-model>
+      </a-entity>
+
+      <a-entity class="planet-target" id="jupiter-target" mindar-image-target="targetIndex: 4" data-planet="jupiter">
+        <a-gltf-model
+          src="#jupiterModel"
+          position="0 0 0"
+          scale="0.38 0.38 0.38"
+          animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 9000; easing: linear"
+        ></a-gltf-model>
+      </a-entity>
+
+      <a-entity class="planet-target" id="saturn-target" mindar-image-target="targetIndex: 5" data-planet="saturn">
+        <a-gltf-model
+          src="#saturnModel"
+          position="0 0 0"
+          rotation="0 0 -12"
+          scale="0.32 0.32 0.32"
+          animation__spin="property: rotation; to: 0 360 -12; loop: true; dur: 12000; easing: linear"
+        ></a-gltf-model>
+      </a-entity>
+
+      <a-entity class="planet-target" id="uranus-target" mindar-image-target="targetIndex: 6" data-planet="uranus">
+        <a-gltf-model
+          src="#uranusModel"
+          position="0 0 0"
+          rotation="0 0 82"
+          scale="0.37 0.37 0.37"
+          animation__spin="property: rotation; to: 0 360 82; loop: true; dur: 10000; easing: linear"
+        ></a-gltf-model>
+      </a-entity>
+    </a-scene>
+
+    <script src="./js/app.js"></script>
+  </body>
+</html>
