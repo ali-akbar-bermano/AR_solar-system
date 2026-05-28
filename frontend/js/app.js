@@ -62,22 +62,22 @@ function getViewportScaleMultiplier() {
   );
 
   if (viewportWidth <= 360) {
-    return 0.48;
+    return 0.4;
   }
 
   if (viewportWidth <= 430) {
-    return 0.55;
+    return 0.46;
   }
 
   if (viewportWidth <= 600) {
-    return 0.64;
+    return 0.52;
   }
 
   if (viewportWidth <= 820) {
-    return 0.78;
+    return 0.66;
   }
 
-  return 1;
+  return 0.9;
 }
 
 function updatePlanetModelScales() {
@@ -86,7 +86,10 @@ function updatePlanetModelScales() {
   planetModels.forEach((model) => {
     const baseScale = Number(model.dataset.baseScale || 0.36);
     const responsiveScale = (baseScale * scaleMultiplier).toFixed(3);
-    model.setAttribute("scale", `${responsiveScale} ${responsiveScale} ${responsiveScale}`);
+    model.setAttribute(
+      "scale",
+      `${responsiveScale} ${responsiveScale} ${responsiveScale}`,
+    );
   });
 }
 
