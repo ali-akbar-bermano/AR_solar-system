@@ -43,103 +43,113 @@ const PLANET_DATA = {
   },
 };
 
-const targetEntities = document.querySelectorAll(".planet-target");
-const infoPanel = document.querySelector("#info-panel");
-const trackingStatus = document.querySelector("#tracking-status");
-const planetName = document.querySelector("#planet-name");
-const planetSize = document.querySelector("#planet-size");
-const planetDistance = document.querySelector("#planet-distance");
-const planetFact = document.querySelector("#planet-fact");
-const planetModels = document.querySelectorAll(".planet-model");
+/* ------------------------------------------------------------------ */
+/*  A-Frame component: normalize-model                                 */
+/*  Waits for the GLTF model to fully load, measures its real-world   */
+/*  bounding box (including all baked-in node transforms like the     */
+/*  100x matrices from Sketchfab exports), then uniformly scales the  */
+/*  entire mesh so its longest axis equals `targetSize` (in meters).  */
+/* ------------------------------------------------------------------ */
+AFRAME.registerComponent("normalize-model", {
+  schema: {
+    targetSize: { type: "number", default: 0.3 },
+  },
 
-const activeTargets = new Set();
-let selectedPlanet = "mercury";
+  init: function () {
+    this.el.addEventListener("model-loaded", () => {
+      this.rescale();
+    });
+  },
 
-const SAFE_PLANET_SCALES = {
-  mercury: 0.08,
-  venus: 0.08,
-  earth: 0.08,
-  mars: 0.08,
-  jupiter: 0.10,
-  saturn: 0.07,
-  uranus: 0.09
-};
+  rescale: function () {
+    const mesh = this.el.getObject3D("mesh");
+    if (!mesh) return;
 
-function getViewportScaleMultiplier() {
-  // Abandon dynamic scaling calculations; return flat 1.0 multiplier
-  return 1.0;
-}
+    // Reset the entity scale to 1 first so the bounding box measurement
+    // reflects only the model's internal geometry + node transforms.
+    this.el.object3D.scale.set(1, 1, 1);
+    this.el.object3D.updateMatrixWorld(true);
 
-function updatePlanetModelScales() {
-  planetModels.forEach((model) => {
-    const targetEntity = model.closest(".planet-target");
-    const planetKey = targetEntity ? targetEntity.dataset.planet : "mercury";
-    const safeScale = SAFE_PLANET_SCALES[planetKey] || 0.08;
-    model.setAttribute("scale", { x: safeScale, y: safeScale, z: safeScale });
-  });
-}
+    const box = new THREE.Box3().setFromObject(mesh);
+    const size = new THREE.Vector3();
+    box.getSize(size);
 
-function renderPlanetInfo(planetKey) {
-  const planet = PLANET_DATA[planetKey];
+    const maxDim = Math.max(size.x, size.y, size.z);
+    if (maxDim === 0) return;
 
-  if (!planet) {
-    return;
-  }
+    const uniformScale = this.data.targetSize / maxDim;
 
-  selectedPlanet = planetKey;
-  planetName.textContent = planet.name;
-  planetSize.textContent = planet.size;
-  planetDistance.textContent = planet.distance;
-  planetFact.textContent = planet.fact;
-}
+    this.el.object3D.scale.set(uniformScale, uniformScale, uniformScale);
 
-function showPlanetTarget() {
-  const planet = PLANET_DATA[selectedPlanet];
-  trackingStatus.textContent = `${planet.name} target detected`;
-  trackingStatus.classList.add("is-active");
-  renderPlanetInfo(selectedPlanet);
-  infoPanel.classList.add("is-visible");
-}
+    // Also re-center the model so the sphere sits at the entity origin.
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    mesh.position.sub(center.multiplyScalar(uniformScale));
+  },
+});
 
-function hidePlanetTarget() {
-  trackingStatus.textContent = "Scan a planet image";
-  trackingStatus.classList.remove("is-active");
-  infoPanel.classList.remove("is-visible");
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const targetEntities = document.querySelectorAll(".planet-target");
+  const infoPanel = document.querySelector("#info-panel");
+  const trackingStatus = document.querySelector("#tracking-status");
+  const planetName = document.querySelector("#planet-name");
+  const planetSize = document.querySelector("#planet-size");
+  const planetDistance = document.querySelector("#planet-distance");
+  const planetFact = document.querySelector("#planet-fact");
 
-targetEntities.forEach((targetEntity) => {
-  targetEntity.addEventListener("targetFound", () => {
-    const planetKey = targetEntity.dataset.planet;
-    activeTargets.add(planetKey);
-    renderPlanetInfo(planetKey);
-    showPlanetTarget();
+  const activeTargets = new Set();
+  let selectedPlanet = "mercury";
 
-    // Directly target the model and apply the static safe scale immediately
-    const model = targetEntity.querySelector(".planet-model");
-    if (model) {
-      const safeScale = SAFE_PLANET_SCALES[planetKey] || 0.08;
-      model.setAttribute("scale", { x: safeScale, y: safeScale, z: safeScale });
-    }
-  });
+  function renderPlanetInfo(planetKey) {
+    const planet = PLANET_DATA[planetKey];
 
-  targetEntity.addEventListener("targetLost", () => {
-    activeTargets.delete(targetEntity.dataset.planet);
-
-    if (activeTargets.size === 0) {
-      hidePlanetTarget();
+    if (!planet) {
       return;
     }
 
-    const [nextPlanet] = activeTargets;
-    renderPlanetInfo(nextPlanet);
-    showPlanetTarget();
+    selectedPlanet = planetKey;
+    planetName.textContent = planet.name;
+    planetSize.textContent = planet.size;
+    planetDistance.textContent = planet.distance;
+    planetFact.textContent = planet.fact;
+  }
+
+  function showPlanetTarget() {
+    const planet = PLANET_DATA[selectedPlanet];
+    trackingStatus.textContent = `${planet.name} target detected`;
+    trackingStatus.classList.add("is-active");
+    renderPlanetInfo(selectedPlanet);
+    infoPanel.classList.add("is-visible");
+  }
+
+  function hidePlanetTarget() {
+    trackingStatus.textContent = "Scan a planet image";
+    trackingStatus.classList.remove("is-active");
+    infoPanel.classList.remove("is-visible");
+  }
+
+  targetEntities.forEach((targetEntity) => {
+    targetEntity.addEventListener("targetFound", () => {
+      const planetKey = targetEntity.dataset.planet;
+      activeTargets.add(planetKey);
+      renderPlanetInfo(planetKey);
+      showPlanetTarget();
+    });
+
+    targetEntity.addEventListener("targetLost", () => {
+      activeTargets.delete(targetEntity.dataset.planet);
+
+      if (activeTargets.size === 0) {
+        hidePlanetTarget();
+        return;
+      }
+
+      const [nextPlanet] = activeTargets;
+      renderPlanetInfo(nextPlanet);
+      showPlanetTarget();
+    });
   });
+
+  renderPlanetInfo(selectedPlanet);
 });
 
-renderPlanetInfo(selectedPlanet);
-updatePlanetModelScales();
-
-window.addEventListener("resize", updatePlanetModelScales);
-window.addEventListener("orientationchange", () => {
-  window.setTimeout(updatePlanetModelScales, 250);
-});

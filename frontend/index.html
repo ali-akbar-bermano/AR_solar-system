@@ -7,6 +7,7 @@
 
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="./js/app.js"></script>
 
     <style>
       :root {
@@ -202,10 +203,10 @@
       >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.08"
           src="#mercuryModel"
-          position="0 0.15 0.12"
-          scale="0.08 0.08 0.08"
+          position="0 0.1 0"
+          scale="1 1 1"
+          normalize-model="targetSize: 0.3"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 7000; easing: linear"
         ></a-gltf-model>
       </a-entity>
@@ -218,10 +219,10 @@
       >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.08"
           src="#venusModel"
-          position="0 0.15 0.12"
-          scale="0.08 0.08 0.08"
+          position="0 0.1 0"
+          scale="1 1 1"
+          normalize-model="targetSize: 0.3"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"
         ></a-gltf-model>
       </a-entity>
@@ -234,10 +235,10 @@
       >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.08"
           src="#earthModel"
-          position="0 0.15 0.12"
-          scale="0.08 0.08 0.08"
+          position="0 0.1 0"
+          scale="1 1 1"
+          normalize-model="targetSize: 0.3"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6500; easing: linear"
         ></a-gltf-model>
       </a-entity>
@@ -250,10 +251,10 @@
       >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.08"
           src="#marsModel"
-          position="0 0.15 0.12"
-          scale="0.08 0.08 0.08"
+          position="0 0.1 0"
+          scale="1 1 1"
+          normalize-model="targetSize: 0.3"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 6800; easing: linear"
         ></a-gltf-model>
       </a-entity>
@@ -266,10 +267,10 @@
       >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.10"
           src="#jupiterModel"
-          position="0 0.15 0.12"
-          scale="0.10 0.10 0.10"
+          position="0 0.1 0"
+          scale="1 1 1"
+          normalize-model="targetSize: 0.35"
           animation__spin="property: rotation; to: 0 360 0; loop: true; dur: 9000; easing: linear"
         ></a-gltf-model>
       </a-entity>
@@ -282,11 +283,11 @@
       >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.07"
           src="#saturnModel"
-          position="0 0.15 0.12"
+          position="0 0.1 0"
           rotation="0 0 -12"
-          scale="0.07 0.07 0.07"
+          scale="1 1 1"
+          normalize-model="targetSize: 0.35"
           animation__spin="property: rotation; to: 0 360 -12; loop: true; dur: 12000; easing: linear"
         ></a-gltf-model>
       </a-entity>
@@ -299,16 +300,14 @@
       >
         <a-gltf-model
           class="planet-model"
-          data-base-scale="0.09"
           src="#uranusModel"
-          position="0 0.15 0.12"
+          position="0 0.1 0"
           rotation="0 0 82"
-          scale="0.09 0.09 0.09"
+          scale="1 1 1"
+          normalize-model="targetSize: 0.3"
           animation__spin="property: rotation; to: 0 360 82; loop: true; dur: 10000; easing: linear"
         ></a-gltf-model>
       </a-entity>
     </a-scene>
-
-    <script src="./js/app.js"></script>
   </body>
 </html>
