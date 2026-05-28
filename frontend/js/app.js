@@ -73,12 +73,9 @@ function updatePlanetModelScales() {
   const scaleMultiplier = getViewportScaleMultiplier();
 
   planetModels.forEach((model) => {
-    const baseScale = Number(model.dataset.baseScale || 0.36);
-    const responsiveScale = (baseScale * scaleMultiplier).toFixed(3);
-    model.setAttribute(
-      "scale",
-      `${responsiveScale} ${responsiveScale} ${responsiveScale}`,
-    );
+    const baseScale = Number(model.dataset.baseScale || 0.20);
+    const responsiveScale = Number((baseScale * scaleMultiplier).toFixed(3));
+    model.setAttribute("scale", { x: responsiveScale, y: responsiveScale, z: responsiveScale });
   });
 }
 
@@ -116,7 +113,15 @@ targetEntities.forEach((targetEntity) => {
     activeTargets.add(planetKey);
     renderPlanetInfo(planetKey);
     showPlanetTarget();
-    updatePlanetModelScales();
+
+    // Directly target the model and force the scale update immediately using A-Frame object format
+    const model = targetEntity.querySelector(".planet-model");
+    if (model) {
+      const baseScale = Number(model.dataset.baseScale || 0.20);
+      const scaleMultiplier = getViewportScaleMultiplier();
+      const responsiveScale = Number((baseScale * scaleMultiplier).toFixed(3));
+      model.setAttribute("scale", { x: responsiveScale, y: responsiveScale, z: responsiveScale });
+    }
   });
 
   targetEntity.addEventListener("targetLost", () => {
